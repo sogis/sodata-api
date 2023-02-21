@@ -1,0 +1,59 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.2'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'org.graalvm.buildtools.native' version '0.9.18'
+}
+
+group = 'ch.so.agi.sodata'
+
+apply from: "$rootDir/gradle/versioning.gradle"
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+compileJava {
+    options.compilerArgs.addAll(['--release', '17'])
+}
+
+bootJar {
+   archiveName = baseName + "-" + version + "-exec.jar"
+}
+
+repositories {
+	mavenCentral()
+    maven { url 'https://jars.interlis.ch/' }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    
+    implementation 'org.locationtech.jts:jts-core:1.19.0' 
+
+    implementation('io.github.sogis:meta2file:1.0.92') {
+        exclude group: "org.slf4j", module: "slf4j-api"
+        exclude group: "org.slf4j", module: "slf4j-simple"
+    }
+      
+    implementation 'ch.interlis:iox-ili:1.21.16'
+    implementation 'ch.interlis:ili2c-core:5.3.2'
+    implementation 'ch.interlis:ili2c-tool:5.3.2'
+    
+    implementation 'net.lingala.zip4j:zip4j:2.11.4'
+    
+    // Falls ich DTO benötige (für STAC).
+    //implementation 'org.modelmapper:modelmapper:3.1.1'
+    //implementation 'org.modelmapper:modelmapper-module-jsr310:1.2.3'
+    
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
