@@ -1,4 +1,4 @@
-# sodata-listings
+# sodata-api
 
 ```
 -Dspring.profiles.active=dev
