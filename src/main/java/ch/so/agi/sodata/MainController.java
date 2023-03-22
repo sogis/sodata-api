@@ -98,11 +98,10 @@ public class MainController {
             if (filename.toLowerCase().endsWith("itf")) mediaType = MediaType.TEXT_PLAIN; 
             
             File dataFile = Path.of(tmpWorkDir.toFile().getAbsolutePath(), filename).toFile();
-            InputStream is = new java.io.FileInputStream(dataFile);
             return ResponseEntity
                     .ok().header("content-disposition", "attachment; filename=" + dataFile.getName())
                     .contentLength(dataFile.length())
-                    .contentType(MediaType.APPLICATION_XML).body(new InputStreamResource(is));            
+                    .contentType(MediaType.APPLICATION_XML).body(new CleanupInputStreamResource(dataFile));            
         } catch (IOException | URISyntaxException | InterruptedException e) {
             e.printStackTrace();
             log.error(e.getMessage());
@@ -115,31 +114,4 @@ public class MainController {
         fos.write(body.readAllBytes());
         fos.close();
     }
-
-    //@Scheduled(cron="0 0 0/6 * * *")
-    @Scheduled(fixedRate = 30000)
-    public void cleanUp() {    
-        int fileAgeDeleteSeconds = 30;
-        log.info("Cronjob: Deleting temporary files older then {}s.", fileAgeDeleteSeconds);
-        File[] tmpDirs = new java.io.File(WORK_DIRECTORY).listFiles();
-        if(tmpDirs!=null) {
-            for (java.io.File tmpDir : tmpDirs) {
-                if (tmpDir.getName().startsWith(WORK_DIRECTORY_PREFIX)) {
-                    try {
-                        FileTime creationTime = (FileTime) Files.getAttribute(Paths.get(tmpDir.getAbsolutePath()), "creationTime");                    
-                        Instant now = Instant.now();
-                        
-                        long fileAge = now.getEpochSecond() - creationTime.toInstant().getEpochSecond();                        
-                        if (fileAge > fileAgeDeleteSeconds) {
-                            log.debug("deleting {}", tmpDir.getAbsolutePath());
-                            FileSystemUtils.deleteRecursively(tmpDir);
-                        }
-                    } catch (IOException e) {
-                        throw new IllegalStateException(e);
-                    }
-                }
-            }
-        }
-    }
-
 }

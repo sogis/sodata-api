@@ -14,10 +14,10 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 @SpringBootApplication
 @EnableScheduling
 @Configuration
-public class SodataListingsApplication {
+public class SodataApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SodataListingsApplication.class, args);
+		SpringApplication.run(SodataApiApplication.class, args);
 	}
 	
     @Bean
