@@ -54,7 +54,7 @@ docker run -p 8080:8080 -v /path/to/datasearch.xml:/config/datasearch.xml sogis/
 
 ## Externe Abhängigkeiten
 
-Die ilisite.xml-Datei unserer INTERLIS-Modellablage (https://geo.so.ch/models) zeigt auf diese Anwendung als `subsidiarySite`.
+Die ilisite.xml-Datei unserer INTERLIS-Modellablage (https://geo.so.ch/models) zeigt auf diese Anwendung als `subsidiarySite`. Die ilisite.xml-Datei dieser Anwendung verlinkt als `parentSite` zurück.
 
 ## Konfiguration und Betrieb in der GDI
 
