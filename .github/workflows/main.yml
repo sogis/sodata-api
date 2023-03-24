@@ -18,6 +18,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - uses: actions/checkout@v3
 
@@ -57,7 +61,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
         if: ${{ (github.ref == 'refs/heads/main') && (github.event_name != 'pull_request') && !env.ACT }}
 
-      - name: Build and push to hub.docker.com
+      - name: Build and push to registries
         uses: docker/build-push-action@v2
         with:
           platforms: linux/amd64,linux/arm64
