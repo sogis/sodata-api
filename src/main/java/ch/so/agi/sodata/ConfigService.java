@@ -149,26 +149,28 @@ public class ConfigService {
                         iomObj.setattrvalue("technicalContact", themePublication.getServicer().getOfficeAtWeb().toString());
                         if (themePublication.getFurtherInformation() != null) iomObj.setattrvalue("furtherInformation", themePublication.getFurtherInformation().toString());
 
-                        for (ch.so.agi.meta2file.model.Service service : themePublication.getServices()) {
-                            if (service.getType().equals(ServiceType.WMS)) {
-                                Iom_jObject knownWMS = new Iom_jObject("DatasetIdx16.WebService_", null);
-                                knownWMS.setattrvalue("value", service.getEndpoint().toString());
-                                iomObj.addattrobj("knownWMS", knownWMS);
-                            } else if (service.getType().equals(ServiceType.WFS)) {
-                                Iom_jObject knownWFS = new Iom_jObject("DatasetIdx16.WebService_", null);
-                                knownWFS.setattrvalue("value", service.getEndpoint().toString());
-                                iomObj.addattrobj("knownWFS", knownWFS);
-                            } else if (service.getType().equals(ServiceType.DATA)) {
-                                Iom_jObject furtherWS = new Iom_jObject("DatasetIdx16.WebService_", null);
-                                furtherWS.setattrvalue("value", service.getEndpoint().toString());
-                                iomObj.addattrobj("furtherWS", furtherWS);
-                            } else if (service.getType().equals(ServiceType.WGC)) {
-                                Iom_jObject knownPortal = new Iom_jObject("DatasetIdx16.WebSite_", null);
-                                knownPortal.setattrvalue("value", service.getEndpoint().toString() + "?l=" + service.getLayers().get(0).getIdentifier());
-                                iomObj.addattrobj("knownPortal", knownPortal);
-                            }
+                        if (themePublication.getServices() != null) {
+                            for (ch.so.agi.meta2file.model.Service service : themePublication.getServices()) {
+                                if (service.getType().equals(ServiceType.WMS)) {
+                                    Iom_jObject knownWMS = new Iom_jObject("DatasetIdx16.WebService_", null);
+                                    knownWMS.setattrvalue("value", service.getEndpoint().toString());
+                                    iomObj.addattrobj("knownWMS", knownWMS);
+                                } else if (service.getType().equals(ServiceType.WFS)) {
+                                    Iom_jObject knownWFS = new Iom_jObject("DatasetIdx16.WebService_", null);
+                                    knownWFS.setattrvalue("value", service.getEndpoint().toString());
+                                    iomObj.addattrobj("knownWFS", knownWFS);
+                                } else if (service.getType().equals(ServiceType.DATA)) {
+                                    Iom_jObject furtherWS = new Iom_jObject("DatasetIdx16.WebService_", null);
+                                    furtherWS.setattrvalue("value", service.getEndpoint().toString());
+                                    iomObj.addattrobj("furtherWS", furtherWS);
+                                } else if (service.getType().equals(ServiceType.WGC)) {
+                                    Iom_jObject knownPortal = new Iom_jObject("DatasetIdx16.WebSite_", null);
+                                    knownPortal.setattrvalue("value", service.getEndpoint().toString() + "?l=" + service.getLayers().get(0).getIdentifier());
+                                    iomObj.addattrobj("knownPortal", knownPortal);
+                                }
+                            }    
                         }
-
+                        
                         // Testeshalber nur XTF/ITF
                         for (FileFormat fileFormat : themePublication.getFileFormats()) {
                             if (fileFormat.getName().contains("INTERLIS")) {
