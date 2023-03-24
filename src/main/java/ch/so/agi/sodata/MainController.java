@@ -80,7 +80,9 @@ public class MainController {
             
             String downloadHostUrl = configService.getDownloadHostUrlMap().get(identifier);
             String requestUrl = downloadHostUrl + "/" + identifier + "/aktuell/" + filename + ".zip";
-                        
+            
+            log.info("request url: {}", requestUrl);
+            
             File zipFile = Paths.get(tmpWorkDir.toFile().getAbsolutePath(), filename + ".zip").toFile();
             HttpRequest httpRequest = HttpRequest.newBuilder().GET().uri(new URI(requestUrl))
                     .timeout(Duration.ofSeconds(120L)).build();
@@ -96,7 +98,7 @@ public class MainController {
             
             MediaType mediaType = MediaType.APPLICATION_XML;
             if (filename.toLowerCase().endsWith("itf")) mediaType = MediaType.TEXT_PLAIN; 
-            
+                        
             File dataFile = Path.of(tmpWorkDir.toFile().getAbsolutePath(), filename).toFile();
             return ResponseEntity
                     .ok().header("content-disposition", "attachment; filename=" + dataFile.getName())
