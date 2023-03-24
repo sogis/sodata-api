@@ -1,9 +1,5 @@
 # sodata-api
 
-```
--Dspring.profiles.active=dev
-```
-
 ## TODO
 
 - Nachführung Datenbezug.md
