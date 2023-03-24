@@ -8,6 +8,7 @@
 
 - Nachführung Datenbezug.md
 - more tests
+- stac api
 
 
 ## Beschreibung
@@ -73,4 +74,12 @@ Das Datenmodell (von ilidata.xml) erlaubt es nicht auf beliebige Dateien im Inte
 
 ## Entwicklung
 
+### Run
+
 Starten mit Spring Tools (Eclipse).
+
+### Build
+
+```
+./gradlew clean build
+```
