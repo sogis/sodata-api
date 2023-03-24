@@ -76,7 +76,7 @@ Das Datenmodell (von ilidata.xml) erlaubt es nicht auf beliebige Dateien im Inte
 
 ### Run
 
-Starten mit Spring Tools (Eclipse).
+Starten mit Spring Tools (Eclipse). Unter "Run configurations - Arguments" `-Dspring.profiles.active=dev` hinzufügen.
 
 ### Build
 
