@@ -30,13 +30,13 @@ jobs:
           version: '22.3.0'
           java-version: '17'
           #components: 'python'
-          cache: 'gradle'
+          cache: 'maven'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build 
         run: |
           ./gradlew clean build
-          ls -la build/libs
+          ls -la target
 
       - name: Set up QEMU for amd64
         uses: docker/setup-qemu-action@v2

@@ -13,7 +13,7 @@ VOLUME ["/config"]
 ENV HOME=/app
 WORKDIR $HOME
 
-COPY build/libs/sodata-*-exec.jar ./application.jar
+COPY target/sodata-*.jar ./application.jar
 
 RUN chown $UID:0 . && \
     chmod 0775 . && \
