@@ -35,7 +35,7 @@ jobs:
 
       - name: Build 
         run: |
-          ./gradlew clean build
+          ./mvnw clean package
           ls -la target
 
       - name: Set up QEMU for amd64

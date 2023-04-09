@@ -29,13 +29,13 @@ Die Anwendung kann am einfachsten mittels Env-Variablen gesteuert werden. Es ste
 
 Falls die _datasearch.xml_-Datei im Verzeichnis _/config/_ vorliegt, reicht:
 ```
-java -jar build/libs/sodata-api-<X.Y.Z>-exec.jar 
+java -jar target/sodata-api-<X.Y.Z>.jar 
 ```
 
 Sonst muss die Datei explizit angegeben werden:
 
 ```
-java -jar build/libs/sodata-api-<X.Y.Z>-exec.jar --app.configFile=/path/to/datasearch.xml
+java -jar target/sodata-api-<X.Y.Z>.jar --app.configFile=/path/to/datasearch.xml
 ```
 
 ### Docker
@@ -72,10 +72,12 @@ Das Datenmodell (von ilidata.xml) erlaubt es nicht auf beliebige Dateien im Inte
 
 ### Run
 
-Starten mit Spring Tools (Eclipse). Unter "Run configurations - Arguments" `-Dspring.profiles.active=dev` hinzufügen.
+```
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+```
 
 ### Build
 
 ```
-./gradlew clean build
+./mvnw clean package
 ```
