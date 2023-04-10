@@ -1,5 +1,7 @@
 FROM ghcr.io/graalvm/graalvm-ce:ol9-java17-22.3.0
 
+RUN gu install python
+
 ARG UID=1001
 RUN adduser -r sodata -u $UID
 
@@ -9,6 +11,13 @@ RUN chown $UID:0 . && \
     ls -la
 
 VOLUME ["/config"]
+
+WORKDIR /stac
+RUN chown $UID:0 . && \
+    chmod 0775 . && \
+    ls -la
+
+VOLUME ["/stac"]
 
 ENV HOME=/app
 WORKDIR $HOME

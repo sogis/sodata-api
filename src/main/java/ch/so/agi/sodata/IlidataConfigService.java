@@ -46,13 +46,13 @@ import ch.so.agi.meta2file.model.ServiceType;
 import ch.so.agi.meta2file.model.ThemePublication;
 
 @Service
-public class ConfigService {
+public class IlidataConfigService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Value("${app.configFile}")
     private String CONFIG_FILE;   
 
-    @Value("${app.ilidataDir}")
+    @Value("${app.ili.ilidataDir}")
     private String ilidataDir;
     
     private static final String DEFAULT_DOWNLOAD_HOST_URL = "https://files.geo.so.ch";
@@ -67,7 +67,7 @@ public class ConfigService {
         return downloadHostUrlMap;
     }
 
-    public void parse() throws Ili2cFailure, IOException, IoxException, XMLStreamException {
+    public void createFile() throws Ili2cFailure, IOException, IoxException, XMLStreamException {
         IoxWriter ioxWriter = createIlidataWriter();
         ioxWriter.write(new StartTransferEvent("SOGIS-20230218", "", null));
         ioxWriter.write(new StartBasketEvent(ILI_TOPIC,BID));

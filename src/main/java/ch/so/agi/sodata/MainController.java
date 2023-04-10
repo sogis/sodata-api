@@ -36,7 +36,7 @@ public class MainController {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    ConfigService configService;
+    IlidataConfigService configService;
 
     @Autowired
     private HttpClient httpClient;
