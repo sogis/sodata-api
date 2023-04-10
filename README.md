@@ -52,7 +52,7 @@ docker run -p 8080:8080 sogis/sodata-api:latest
 Wird die Datei nicht in das Image gebrannt, ergibt sich folgender Befehl:
 
 ```
-docker run -p 8080:8080 -v /path/to/datasearch.xml:/config/datasearch.xml -v /path/to/stac:/stac sogis/sodata-api:latest
+docker run -p 8080:8080 -v /path/to/datasearch.xml:/config/datasearch.xml  -e STAC_DIR=/stac/ [-v /path/to/stac:/stac] sogis/sodata-api:latest
 ```
 
 ## Externe Abhängigkeiten
