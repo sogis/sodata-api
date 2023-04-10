@@ -45,14 +45,9 @@
             <version>1.19.0</version>
         </dependency>
         <dependency>
-            <groupId>org.locationtech.jts.io</groupId>
-            <artifactId>jts-io-common</artifactId>
-            <version>1.19.0</version>
-        </dependency>
-        <dependency>
             <groupId>io.github.sogis</groupId>
             <artifactId>meta2file</artifactId>
-            <version>1.0.101</version>
+            <version>1.0.92</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -84,12 +79,6 @@
             <artifactId>zip4j</artifactId>
             <version>2.11.4</version>
         </dependency>
-        <dependency>
-            <groupId>org.graalvm.sdk</groupId>
-            <artifactId>graal-sdk</artifactId>
-            <version>22.3.0</version>
-            <scope>provided</scope>
-        </dependency>
 
 <!--
     // Falls ich DTO benötige (für STAC).
@@ -116,152 +105,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            
-            <!-- 
-            Wir erstellen vorgängig eine Zip-Datei des venv-Ordners und kopieren ihn als Resource. Somit wird die 
-            Zip-Datei in die Jar-Datei gepackt und wir können sie zur Laufzeit entpacken. Weniger aufwändig als 
-            alle Dateien (als Resourcen) einzeln.
-            Bedingt aber bisschen Logik, die zwischen Dev- und Prod-Deployment unterscheidet, was mir wiederum
-            nicht gefällt.
-            -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                         <exclude>venv/</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M3</version>
-                <executions>
-                    <execution>
-                        <id>enforce-graalvm-python</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireFilesExist>
-                                    <message>You must set JAVA_HOME to a GraalVM with Python installed.</message>
-                                    <!-- Eigentlich /bin/graalpy. Scheint aber nicht zu funktionieren wegen symlink. -->
-                                    <!-- Man könnte beanshell Code verwenden (also Java) aber finde ich übertrieben.-->
-                                    <files>
-                                        <file>${env.JAVA_HOME}/languages/python/bin/python3</file>
-                                    </files>
-                                </requireFilesExist>
-                            </rules>
-                            <fail>true</fail>
-                            <failFast>true</failFast>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
-        <resources>
-            <!--
-             ! We make sure to include the virtual environment and any additional
-             ! Python files with the build artifacts.
-              -->
-            <resource>
-                <directory>${project.basedir}</directory>
-                <includes>
-                    <include>venv/**/*</include> <!-- Wird immer noch benötigt für Dev-Deplyoment -->
-                    <include>venv.zip</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${project.basedir}/src/main/resources/</directory>
-                <includes>
-                    <include>*.py</include>
-                    <include>*.properties</include>
-                    <include>**/*.ili</include>
-                </includes>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>${project.basedir}/src/test/resources</directory>
-                <includes>
-                    <include>*.properties</include>
-                    <include>*.xml</include>
-                </includes>
-            </testResource>
-        </testResources>
     </build>
-    <profiles>
-        <profile>
-            <id>prepare-venv</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.6.0</version>
-                        <executions>
-                            <execution>
-                                <id>Prepare venv</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>${env.JAVA_HOME}/bin/graalpy</executable>
-                                    <arguments>
-                                        <argument>-m</argument>
-                                        <argument>venv</argument>
-                                        <argument>venv</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>Install required packages into venv</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>venv/bin/pip</executable>
-                                    <arguments>
-                                        <argument>install</argument>
-                                        <argument>pystac[validation]==1.7.2</argument>
-                                    </arguments>
-                                    <environmentVariables>
-                                        <VIRTUAL_ENV>${project.basedir}/venv</VIRTUAL_ENV>
-                                    </environmentVariables>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>Zip venv for deployment</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>zip</executable>
-                                    <arguments>
-                                        <argument>-y</argument>
-                                        <argument>-r</argument>
-                                        <argument>venv.zip</argument>
-                                        <argument>venv</argument>
-                                        <argument>-x</argument>
-                                        <argument>"venv/bin/*"</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-            <activation>
-                <file>
-                    <missing>venv/bin/pip</missing>
-                </file>
-            </activation>
-        </profile>
-    </profiles>
+
 </project>

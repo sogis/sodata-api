@@ -29,7 +29,7 @@ jobs:
         with:
           version: '22.3.0'
           java-version: '17'
-          components: 'python'
+          #components: 'python'
           cache: 'maven'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 

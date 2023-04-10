@@ -9,11 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class AppWebMvcConfig implements WebMvcConfigurer {
-    @Value("${app.ili.ilidataDir}")
+    @Value("${app.ilidataDir}")
     private String ilidataDir;
-
-    @Value("${app.stac.directory}")
-    private String stacDirectory;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -21,6 +18,5 @@ public class AppWebMvcConfig implements WebMvcConfigurer {
         // weglässt (auch wenn explizit gesetzt) und Spring Boot diesen bei einer
         // Verzeichnisangabe explizit verlangt.
         registry.addResourceHandler("/ilidata.xml").addResourceLocations("file:"+ilidataDir+File.separator);
-        registry.addResourceHandler("/stac/**").addResourceLocations("file:"+stacDirectory+File.separator);
     }
 }
