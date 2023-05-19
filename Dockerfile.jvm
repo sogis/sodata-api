@@ -1,7 +1,7 @@
-FROM ghcr.io/graalvm/graalvm-ce:ol9-java17-22.3.0
+FROM bellsoft/liberica-openjdk-alpine:17.0.7
 
 ARG UID=1001
-RUN adduser -r sodata -u $UID
+RUN adduser -S sodata -u $UID
 
 WORKDIR /config
 RUN chown $UID:0 . && \
