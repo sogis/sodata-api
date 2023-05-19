@@ -30,7 +30,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
+          cache: 'maven'
 
       - name: Build 
         run: |
