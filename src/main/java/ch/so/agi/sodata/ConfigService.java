@@ -85,131 +85,138 @@ public class ConfigService {
             if (xr.getEventType() == XMLStreamConstants.START_ELEMENT) {
                 if ("themePublication".equals(xr.getLocalName())) {
                     var themePublication = xmlMapper.readValue(xr, ThemePublication.class);
-                    var identifier = themePublication.getIdentifier();
-                    var items = themePublication.getItems();
                     
                     log.debug("Identifier: {}", themePublication.getIdentifier());
                                         
                     if (themePublication.getModel() != null && themePublication.getModel().trim().length() > 0) {
-                        tid++;
+                                                
+                        // TODO
+                        // In der Forschleife gibt es Optimierungspotential, da verscheidene Objekte immer und immer
+                        // wieder erzeugt hergestellt werden.
                         
-                        if (themePublication.getDownloadHostUrl() != null) {
-                            downloadHostUrlMap.put(identifier, themePublication.getDownloadHostUrl().toString());
+                        int itemSize = themePublication.getItems().size();
+                        for (Item item : themePublication.getItems()) {
+                            tid++;
+                            
+                            String themeIdentifier = themePublication.getIdentifier();
+                            if (itemSize > 1) {
+                                themeIdentifier = item.getIdentifier()+"."+themeIdentifier;
+                            }
+                            
+                            if (themePublication.getDownloadHostUrl() != null) {
+                                downloadHostUrlMap.put(themeIdentifier, themePublication.getDownloadHostUrl().toString());
 
-                        } else {
-                            downloadHostUrlMap.put(identifier, DEFAULT_DOWNLOAD_HOST_URL);
-                        }
-                        
-                        Iom_jObject iomObj = new Iom_jObject("DatasetIdx16.DataIndex.DatasetMetadata", String.valueOf(tid));
-                        iomObj.setattrvalue("id", themePublication.getIdentifier());
-                        iomObj.setattrvalue("version", "current");
-                        iomObj.setattrvalue("owner", themePublication.getOwner().getOfficeAtWeb().toString());
-                        
-                        Iom_jObject model = new Iom_jObject("DatasetIdx16.ModelLink", null);
-                        model.setattrvalue("name", themePublication.getModel());
-                        model.setattrvalue("locationHint", "https://geo.so.ch/models");
-                        iomObj.addattrobj("model", model);
+                            } else {
+                                downloadHostUrlMap.put(themeIdentifier, DEFAULT_DOWNLOAD_HOST_URL);
+                            }
 
-                        iomObj.setattrvalue("epsgCode", "2056");
-                        iomObj.setattrvalue("publishingDate", themePublication.getLastPublishingDate().format(DateTimeFormatter.ISO_DATE));
+                            Iom_jObject iomObj = new Iom_jObject("DatasetIdx16.DataIndex.DatasetMetadata", String.valueOf(tid));
+                            iomObj.setattrvalue("id", themeIdentifier);
+                            iomObj.setattrvalue("version", "current");
+                            iomObj.setattrvalue("owner", themePublication.getOwner().getOfficeAtWeb().toString());
+                            
+                            Iom_jObject model = new Iom_jObject("DatasetIdx16.ModelLink", null);
+                            model.setattrvalue("name", themePublication.getModel());
+                            model.setattrvalue("locationHint", "https://geo.so.ch/models");
+                            iomObj.addattrobj("model", model);
 
-                        Iom_jObject boundary = new Iom_jObject("DatasetIdx16.BoundingBox", null);
-                        
-                        double left = themePublication.getBbox().getLeft();
-                        double bottom = themePublication.getBbox().getBottom();
-                        double right = themePublication.getBbox().getRight();
-                        double top = themePublication.getBbox().getTop();
-                        
-                        String westlimit = String.valueOf(ApproxSwissProj.CHtoWGSlng(left, bottom));
-                        String southlimit = String.valueOf(ApproxSwissProj.CHtoWGSlat(left, bottom));
-                        String eastlimit = String.valueOf(ApproxSwissProj.CHtoWGSlng(right, top));
-                        String northlimit = String.valueOf(ApproxSwissProj.CHtoWGSlat(right, top));
+                            iomObj.setattrvalue("epsgCode", "2056");
+                            iomObj.setattrvalue("publishingDate", themePublication.getLastPublishingDate().format(DateTimeFormatter.ISO_DATE));
 
-                        boundary.setattrvalue("westlimit", westlimit);
-                        boundary.setattrvalue("southlimit", southlimit);
-                        boundary.setattrvalue("eastlimit", eastlimit);
-                        boundary.setattrvalue("northlimit", northlimit);
-                        iomObj.addattrobj("boundary", boundary);
+                            Iom_jObject boundary = new Iom_jObject("DatasetIdx16.BoundingBox", null);
+                            
+                            double left = themePublication.getBbox().getLeft();
+                            double bottom = themePublication.getBbox().getBottom();
+                            double right = themePublication.getBbox().getRight();
+                            double top = themePublication.getBbox().getTop();
+                            
+                            String westlimit = String.valueOf(ApproxSwissProj.CHtoWGSlng(left, bottom));
+                            String southlimit = String.valueOf(ApproxSwissProj.CHtoWGSlat(left, bottom));
+                            String eastlimit = String.valueOf(ApproxSwissProj.CHtoWGSlng(right, top));
+                            String northlimit = String.valueOf(ApproxSwissProj.CHtoWGSlat(right, top));
 
-                        Iom_jObject title = new Iom_jObject("DatasetIdx16.MultilingualText", null);
-                        Iom_jObject titleLocalisedText = new Iom_jObject("DatasetIdx16.LocalisedText", null);
-                        titleLocalisedText.setattrvalue("Language", "de");
-                        titleLocalisedText.setattrvalue("Text", themePublication.getTitle());
-                        title.addattrobj("LocalisedText", titleLocalisedText);
-                        iomObj.addattrobj("title", title);
-                        
-                        Iom_jObject shortDescription = new Iom_jObject("DatasetIdx16.MultilingualMText", null);
-                        Iom_jObject localisedMTextshortDescription = new Iom_jObject("DatasetIdx16.LocalisedMText", null);
-                        localisedMTextshortDescription.setattrvalue("Language", "de");
-                        localisedMTextshortDescription.setattrvalue("Text", "<![CDATA["+themePublication.getShortDescription()+"]]>");
-                        shortDescription.addattrobj("LocalisedText", localisedMTextshortDescription);
-                        iomObj.addattrobj("shortDescription", shortDescription);
+                            boundary.setattrvalue("westlimit", westlimit);
+                            boundary.setattrvalue("southlimit", southlimit);
+                            boundary.setattrvalue("eastlimit", eastlimit);
+                            boundary.setattrvalue("northlimit", northlimit);
+                            iomObj.addattrobj("boundary", boundary);
 
-                        if (themePublication.getKeywordsList() != null) iomObj.setattrvalue("keywords", String.join(",", themePublication.getKeywordsList()));
-                        iomObj.setattrvalue("technicalContact", themePublication.getServicer().getOfficeAtWeb().toString());
-                        if (themePublication.getFurtherInformation() != null) iomObj.setattrvalue("furtherInformation", themePublication.getFurtherInformation().toString());
+                            Iom_jObject title = new Iom_jObject("DatasetIdx16.MultilingualText", null);
+                            Iom_jObject titleLocalisedText = new Iom_jObject("DatasetIdx16.LocalisedText", null);
+                            titleLocalisedText.setattrvalue("Language", "de");
+                            titleLocalisedText.setattrvalue("Text", themePublication.getTitle());
+                            title.addattrobj("LocalisedText", titleLocalisedText);
+                            iomObj.addattrobj("title", title);
+                            
+                            Iom_jObject shortDescription = new Iom_jObject("DatasetIdx16.MultilingualMText", null);
+                            Iom_jObject localisedMTextshortDescription = new Iom_jObject("DatasetIdx16.LocalisedMText", null);
+                            localisedMTextshortDescription.setattrvalue("Language", "de");
+                            localisedMTextshortDescription.setattrvalue("Text", "<![CDATA["+themePublication.getShortDescription()+"]]>");
+                            shortDescription.addattrobj("LocalisedText", localisedMTextshortDescription);
+                            iomObj.addattrobj("shortDescription", shortDescription);
 
-                        if (themePublication.getServices() != null) {
-                            for (ch.so.agi.meta2file.model.Service service : themePublication.getServices()) {
-                                if (service.getType().equals(ServiceType.WMS)) {
-                                    Iom_jObject knownWMS = new Iom_jObject("DatasetIdx16.WebService_", null);
-                                    knownWMS.setattrvalue("value", service.getEndpoint().toString());
-                                    iomObj.addattrobj("knownWMS", knownWMS);
-                                } else if (service.getType().equals(ServiceType.WFS)) {
-                                    Iom_jObject knownWFS = new Iom_jObject("DatasetIdx16.WebService_", null);
-                                    knownWFS.setattrvalue("value", service.getEndpoint().toString());
-                                    iomObj.addattrobj("knownWFS", knownWFS);
-                                } else if (service.getType().equals(ServiceType.DATA)) {
-                                    Iom_jObject furtherWS = new Iom_jObject("DatasetIdx16.WebService_", null);
-                                    furtherWS.setattrvalue("value", service.getEndpoint().toString());
-                                    iomObj.addattrobj("furtherWS", furtherWS);
-                                } else if (service.getType().equals(ServiceType.WGC)) {
-                                    Iom_jObject knownPortal = new Iom_jObject("DatasetIdx16.WebSite_", null);
-                                    knownPortal.setattrvalue("value", service.getEndpoint().toString() + "?l=" + service.getLayers().get(0).getIdentifier());
-                                    iomObj.addattrobj("knownPortal", knownPortal);
-                                }
-                            }    
-                        }
-                        
-                        // Testeshalber nur XTF/ITF
-                        for (FileFormat fileFormat : themePublication.getFileFormats()) {
-                            if (fileFormat.getName().contains("INTERLIS")) {
-                                Iom_jObject files = new Iom_jObject("DatasetIdx16.DataFile", null); 
-                              
-                                String fileExt;
-                                String mimeType;
-                                if(fileFormat.getName().equalsIgnoreCase("INTERLIS 1")) {
-                                    mimeType = "application/interlis+txt;version=1.0";
-                                    fileExt = "itf";
-                                } else {
-                                    mimeType = "application/interlis+xml;version=2.3";
-                                    fileExt = "xtf";
-                                }
-                                files.setattrvalue("fileFormat", mimeType);
-                                
-                                if (themePublication.getItems().size() > 1) {
-                                    for (Item item : themePublication.getItems()) {
+                            if (themePublication.getKeywordsList() != null) iomObj.setattrvalue("keywords", String.join(",", themePublication.getKeywordsList()));
+                            iomObj.setattrvalue("technicalContact", themePublication.getServicer().getOfficeAtWeb().toString());
+                            if (themePublication.getFurtherInformation() != null) iomObj.setattrvalue("furtherInformation", themePublication.getFurtherInformation().toString());
+
+                            if (themePublication.getServices() != null) {
+                                for (ch.so.agi.meta2file.model.Service service : themePublication.getServices()) {
+                                    if (service.getType().equals(ServiceType.WMS)) {
+                                        Iom_jObject knownWMS = new Iom_jObject("DatasetIdx16.WebService_", null);
+                                        knownWMS.setattrvalue("value", service.getEndpoint().toString());
+                                        iomObj.addattrobj("knownWMS", knownWMS);
+                                    } else if (service.getType().equals(ServiceType.WFS)) {
+                                        Iom_jObject knownWFS = new Iom_jObject("DatasetIdx16.WebService_", null);
+                                        knownWFS.setattrvalue("value", service.getEndpoint().toString());
+                                        iomObj.addattrobj("knownWFS", knownWFS);
+                                    } else if (service.getType().equals(ServiceType.DATA)) {
+                                        Iom_jObject furtherWS = new Iom_jObject("DatasetIdx16.WebService_", null);
+                                        furtherWS.setattrvalue("value", service.getEndpoint().toString());
+                                        iomObj.addattrobj("furtherWS", furtherWS);
+                                    } else if (service.getType().equals(ServiceType.WGC)) {
+                                        Iom_jObject knownPortal = new Iom_jObject("DatasetIdx16.WebSite_", null);
+                                        knownPortal.setattrvalue("value", service.getEndpoint().toString() + "?l=" + service.getLayers().get(0).getIdentifier());
+                                        iomObj.addattrobj("knownPortal", knownPortal);
+                                    }
+                                }    
+                            }
+
+                            // Testeshalber nur XTF/ITF
+                            for (FileFormat fileFormat : themePublication.getFileFormats()) {
+                                if (fileFormat.getName().contains("INTERLIS")) {
+                                    Iom_jObject files = new Iom_jObject("DatasetIdx16.DataFile", null); 
+                                  
+                                    String fileExt;
+                                    String mimeType;
+                                    if(fileFormat.getName().equalsIgnoreCase("INTERLIS 1")) {
+                                        mimeType = "application/interlis+txt;version=1.0";
+                                        fileExt = "itf";
+                                    } else {
+                                        mimeType = "application/interlis+xml;version=2.3";
+                                        fileExt = "xtf";
+                                    }
+                                    files.setattrvalue("fileFormat", mimeType);
+                                    
+                                    if (itemSize > 1) {
                                         Iom_jObject file = new Iom_jObject("DatasetIdx16.File", null);
                                         file.setattrvalue("path", "files/"+item.getIdentifier() + "." + themePublication.getIdentifier()+"."+fileExt);
                                         files.addattrobj("file", file);
+                                    } else  {
+                                        Iom_jObject file = new Iom_jObject("DatasetIdx16.File", null);
+                                        file.setattrvalue("path", "files/"+themePublication.getIdentifier()+"."+fileExt);
+                                        files.addattrobj("file", file);
+
                                     }
-                                } else  {
-                                    Iom_jObject file = new Iom_jObject("DatasetIdx16.File", null);
-                                    file.setattrvalue("path", "files/"+themePublication.getIdentifier()+"."+fileExt);
-                                    files.addattrobj("file", file);
-
+                                    iomObj.addattrobj("files", files);
                                 }
-                                iomObj.addattrobj("files", files);
                             }
-                        }
 
-                        log.debug("ilidata object id: {}", iomObj.getobjectoid());
-                        ioxWriter.write(new ObjectEvent(iomObj));
-                        
+                            log.debug("ilidata object id: {}", iomObj.getobjectoid());
+                            ioxWriter.write(new ObjectEvent(iomObj));                            
+                        }
                     } else {
                         log.debug("Skipping: {}. Reason: raster data.", themePublication.getIdentifier());
                     }
-
                 }
             }
         }

@@ -71,15 +71,16 @@ public class MainController {
         try {
             Path tmpWorkDir = Files.createTempDirectory(Paths.get(WORK_DIRECTORY), WORK_DIRECTORY_PREFIX);
             
-            String identifier;
+            String themeIdentifier;
+            String itemIdentifier = filename.substring(0,filename.length()-4);
             if (filename.startsWith("ch.")) {
-                identifier = filename.substring(0,filename.length()-4);
+                themeIdentifier = filename.substring(0,filename.length()-4);
             } else {                
-                identifier = filename.substring(filename.indexOf(".")+1,filename.length()-4);                
+                themeIdentifier = filename.substring(filename.indexOf(".")+1,filename.length()-4);
             }
             
-            String downloadHostUrl = configService.getDownloadHostUrlMap().get(identifier);
-            String requestUrl = downloadHostUrl + "/" + identifier + "/aktuell/" + filename + ".zip";
+            String downloadHostUrl = configService.getDownloadHostUrlMap().get(itemIdentifier);
+            String requestUrl = downloadHostUrl + "/" + themeIdentifier + "/aktuell/" + filename + ".zip";
             
             log.info("request url: {}", requestUrl);
             
