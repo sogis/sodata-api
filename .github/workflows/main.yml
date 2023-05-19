@@ -30,12 +30,12 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'maven'
+          cache: 'gradle'
 
       - name: Build 
         run: |
-          ./mvnw clean package
-          ls -la target
+          ./gradlew clean build
+          ls -la build/libs
 
       - name: Set up QEMU for amd64
         uses: docker/setup-qemu-action@v2

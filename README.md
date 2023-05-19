@@ -72,12 +72,10 @@ Das Datenmodell (von ilidata.xml) erlaubt es nicht auf beliebige Dateien im Inte
 
 ### Run
 
-```
-./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
-```
+In "Run Configurations" - "Arguments" - "VM Arguments" das Profil auf "dev" umstellen (`-Dspring.profiles.active=dev`), damit `application-dev.properties` verwendet wird und die Anwendung überhaupt startet.
 
 ### Build
 
 ```
-./mvnw clean package
+./gradlew build
 ```
