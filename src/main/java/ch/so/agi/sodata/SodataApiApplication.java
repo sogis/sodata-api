@@ -53,7 +53,7 @@ public class SodataApiApplication {
     @Bean
     CommandLineRunner init(IlidataConfigService ilidataConfigService, StacConfigService stacConfigService) {
         return args -> {
-            ilidataConfigService.createFile();
+            //ilidataConfigService.createFile();
             stacConfigService.createFiles();
         };
     }

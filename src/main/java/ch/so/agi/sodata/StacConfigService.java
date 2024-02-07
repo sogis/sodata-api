@@ -125,6 +125,10 @@ public class StacConfigService {
                     if ("themePublication".equals(xr.getLocalName())) {
                         ThemePublication themePublication = xmlMapper.readValue(xr, ThemePublication.class);
                         log.debug("Identifier: " + themePublication.getIdentifier());
+                        
+//                        if (!themePublication.getIdentifier().equalsIgnoreCase("ch.so.afu.abbaustellen")) {
+//                            continue;
+//                        }
 
                         // Verwenden wir später, um aus sämtlichen Collections einen Catalog zu machen.
                         collections.add(themePublication.getIdentifier());
@@ -149,6 +153,7 @@ public class StacConfigService {
                         themePublication.setItems(itemsList);
 
                         stacCreator.create(stacDirectory, themePublication, rootHref);
+                        
                     }
                 }
             }

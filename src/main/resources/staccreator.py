@@ -121,4 +121,3 @@ class StacCreator:
         catalog.save(catalog_type=pystac.CatalogType.ABSOLUTE_PUBLISHED, dest_href=os.path.join(collection_file_path))
 
 polyglot.export_value("StacCreator", StacCreator)
-
