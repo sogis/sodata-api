@@ -112,7 +112,7 @@ public class ConfigService {
 
                             Iom_jObject iomObj = new Iom_jObject("DatasetIdx16.DataIndex.DatasetMetadata", String.valueOf(tid));
                             iomObj.setattrvalue("id", themeIdentifier);
-                            iomObj.setattrvalue("version", "current");
+                            iomObj.setattrvalue("version", themePublication.getLastPublishingDate().format(DateTimeFormatter.ISO_DATE));
                             iomObj.setattrvalue("owner", themePublication.getOwner().getOfficeAtWeb().toString());
                             
                             Iom_jObject model = new Iom_jObject("DatasetIdx16.ModelLink", null);
@@ -191,6 +191,9 @@ public class ConfigService {
                                     if(fileFormat.getName().equalsIgnoreCase("INTERLIS 1")) {
                                         mimeType = "application/interlis+txt;version=1.0";
                                         fileExt = "itf";
+                                    } else if (themePublication.getModel().contains("DMAV")) {
+                                        mimeType = "application/interlis+xml;version=2.4";
+                                        fileExt = "xtf";
                                     } else {
                                         mimeType = "application/interlis+xml;version=2.3";
                                         fileExt = "xtf";
