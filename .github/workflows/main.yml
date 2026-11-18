@@ -57,7 +57,7 @@ jobs:
             sodata-api:smoke)
           trap 'docker logs "$container"; docker rm -fv "$container"' EXIT
           url="http://$(docker port "$container" 8080/tcp)"
-          curl --fail --silent --show-error --max-time 5 --retry 30 --retry-connrefused --retry-delay 2 \
+          curl --fail --silent --show-error --max-time 5 --retry 30 --retry-all-errors --retry-delay 2 \
             "$url/actuator/health/readiness" | jq -e '.status == "UP"'
           curl -fsS --max-time 5 "$url/ilisite.xml" > "$RUNNER_TEMP/ilisite.xml"
           curl -fsS --max-time 5 "$url/ilimodels.xml" > "$RUNNER_TEMP/ilimodels.xml"
