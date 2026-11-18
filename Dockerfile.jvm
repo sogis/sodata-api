@@ -1,25 +1,13 @@
-FROM bellsoft/liberica-openjdk-alpine:17.0.7
+FROM registry.access.redhat.com/ubi9/openjdk-17-runtime:1.24-3.1794341131@sha256:86a55892553aba96b77359af591bf1755d65f414c29c30f081c059f907fbebf7
 
-ARG UID=1001
-RUN adduser -S sodata -u $UID
-
+USER 0
 WORKDIR /config
-RUN chown $UID:0 . && \
-    chmod 0775 . && \
-    ls -la
-
+RUN chmod 0775 /config
 VOLUME ["/config"]
+WORKDIR /opt/app
+COPY --chown=0:0 --chmod=0444 build/libs/sodata-*-exec.jar ./application.jar
 
-ENV HOME=/app
-WORKDIR $HOME
-
-COPY build/libs/sodata-*-exec.jar ./application.jar
-
-RUN chown $UID:0 . && \
-    chmod 0775 . && \
-    ls -la
-
-USER $UID
+USER 1001:0
 EXPOSE 8080
-ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
-CMD java -XX:MaxRAMPercentage=80.0 -jar application.jar
+ENV HOME=/opt/app LOG4J_FORMAT_MSG_NO_LOOKUPS=true
+CMD ["java", "-XX:MaxRAMPercentage=80.0", "-jar", "application.jar"]
