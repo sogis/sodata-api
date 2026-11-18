@@ -89,6 +89,7 @@ jobs:
           context: .
           file: Dockerfile.jvm
           pull: true
+          provenance: mode=min
           push: ${{ (github.ref == 'refs/heads/main') && (github.event_name != 'pull_request') && !env.ACT }}
           tags: |
             ${{ env.DOCKER_ACCOUNT }}/${{ env.DOCKER_REPO }}:latest
