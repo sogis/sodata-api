@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/openjdk-17-runtime:1.24-3.1794341131@sha256:86a55892553aba96b77359af591bf1755d65f414c29c30f081c059f907fbebf7
+FROM registry.access.redhat.com/ubi9/openjdk-17-runtime:1.24-3.1794341131
 
 USER 0
 WORKDIR /config
