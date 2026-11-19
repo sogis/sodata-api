@@ -10,4 +10,5 @@ COPY --chown=0:0 --chmod=0444 build/libs/sodata-*-exec.jar ./application.jar
 USER 1001:0
 EXPOSE 8080
 ENV HOME=/opt/app LOG4J_FORMAT_MSG_NO_LOOKUPS=true
-CMD ["java", "-XX:MaxRAMPercentage=80.0", "-jar", "application.jar"]
+# Remove the CVE-2026-114938 mitigation after updating to a fixed UBI9 runtime.
+CMD ["java", "-XX:MaxRAMPercentage=80.0", "-XX:-UseBASE64Intrinsics", "-jar", "application.jar"]
